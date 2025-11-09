@@ -20,7 +20,7 @@ This repository contains MATLAB code to replicate the empirical results in
 │   ├── data/              # data placeholder
 │   └── results/           # logs, tables, workspaces, figures
 ├── docs/
-│   └── index.html         # HTML replication guide (served by GitHub Pages)
+│   └── index.html         # HTML replication guide
 ├── Supplement...pdf       # Supplementary material to the published paper
 ├── LICENSE
 └── README.md
