@@ -1,4 +1,4 @@
-# proxy_svar_stability_restrictions
+# Proxy-SVAR with stability restrictions
 
 This repository contains MATLAB code to replicate the empirical results in
 
