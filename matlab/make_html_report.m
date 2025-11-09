@@ -18,11 +18,13 @@ opts = struct;
 opts.format        = 'html';
 opts.outputDir     = fullfile(rootDir,'..','docs');
 opts.showCode      = true;     % set false if you prefer code hidden
-opts.evalCode      = false;    % evaluation happens inside report
+opts.evalCode      = true;    % evaluation happens inside report
 opts.useNewFigure  = true;
 
 if ~exist(opts.outputDir,'dir'); mkdir(opts.outputDir); end
 
+
+cd(matlabDir);
 htmlFile = publish('main_fiscal.m', opts);
 
 target = fullfile(opts.outputDir,'index.html');
