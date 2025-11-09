@@ -2,7 +2,7 @@
 
 This repository contains MATLAB code to replicate the empirical results in
 
-> Angelini, G., Fanelli, L., and Neri, "Invalid Proxies and Volatility Changes".
+> Angelini, G., Fanelli, L., and Neri, "Invalid Proxies and Volatility Changes" (2025) Journal of Business Economics & Statistics
 
 ## Repository layout
 
