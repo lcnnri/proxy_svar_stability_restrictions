@@ -4,6 +4,11 @@ This repository contains MATLAB code to replicate the empirical results in
 
 > Angelini, G., Fanelli, L., and Neri, "Invalid Proxies and Volatility Changes" (2025) Journal of Business Economics & Statistics
 
+
+**Replication script:**  
+[https://lcnnri.github.io/proxy_svar_stability_restrictions/](https://lcnnri.github.io/proxy_svar_stability_restrictions/)
+
+
 ## Repository layout
 
 ```text
