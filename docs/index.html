@@ -1,0 +1,299 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<META http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<!--
+This HTML was auto-generated from MATLAB code.
+To make changes, update the MATLAB code and republish this document.
+      -->
+<title>main_fiscal</title>
+<meta name="generator" content="MATLAB 25.2">
+<link rel="schema.DC" href="http://purl.org/dc/elements/1.1/">
+<meta name="DC.date" content="2025-11-09">
+<meta name="DC.source" content="main_fiscal.m">
+<style type="text/css">
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,abbr,acronym,address,big,cite,code,del,dfn,em,font,img,ins,kbd,q,s,samp,small,strike,strong,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td{margin:0;padding:0;border:0;outline:0;font-size:100%;vertical-align:baseline;background:transparent}body{line-height:1}ol,ul{list-style:none}blockquote,q{quotes:none}blockquote:before,blockquote:after,q:before,q:after{content:'';content:none}:focus{outine:0}ins{text-decoration:none}del{text-decoration:line-through}table{border-collapse:collapse;border-spacing:0}
+
+html { min-height:100%; margin-bottom:1px; }
+html body { height:100%; margin:0px; font-family:Arial, Helvetica, sans-serif; font-size:10px; color:#000; line-height:140%; background:#fff none; overflow-y:scroll; }
+html body td { vertical-align:top; text-align:left; }
+
+h1 { padding:0px; margin:0px 0px 25px; font-family:Arial, Helvetica, sans-serif; font-size:1.5em; color:#d55000; line-height:100%; font-weight:normal; }
+h2 { padding:0px; margin:0px 0px 8px; font-family:Arial, Helvetica, sans-serif; font-size:1.2em; color:#000; font-weight:bold; line-height:140%; border-bottom:1px solid #d6d4d4; display:block; }
+h3 { padding:0px; margin:0px 0px 5px; font-family:Arial, Helvetica, sans-serif; font-size:1.1em; color:#000; font-weight:bold; line-height:140%; }
+
+a { color:#005fce; text-decoration:none; }
+a:hover { color:#005fce; text-decoration:underline; }
+a:visited { color:#004aa0; text-decoration:none; }
+
+p { padding:0px; margin:0px 0px 20px; }
+img { padding:0px; margin:0px 0px 20px; border:none; }
+p img, pre img, tt img, li img, h1 img, h2 img { margin-bottom:0px; }
+
+ul { padding:0px; margin:0px 0px 20px 23px; list-style:square; }
+ul li { padding:0px; margin:0px 0px 7px 0px; }
+ul li ul { padding:5px 0px 0px; margin:0px 0px 7px 23px; }
+ul li ol li { list-style:decimal; }
+ol { padding:0px; margin:0px 0px 20px 0px; list-style:decimal; }
+ol li { padding:0px; margin:0px 0px 7px 23px; list-style-type:decimal; }
+ol li ol { padding:5px 0px 0px; margin:0px 0px 7px 0px; }
+ol li ol li { list-style-type:lower-alpha; }
+ol li ul { padding-top:7px; }
+ol li ul li { list-style:square; }
+
+.content { font-size:1.2em; line-height:140%; padding: 20px; }
+
+pre, code { font-size:12px; }
+tt { font-size: 1.2em; }
+pre { margin:0px 0px 20px; }
+pre.codeinput { padding:10px; border:1px solid #d3d3d3; background:#f7f7f7; }
+pre.codeoutput { padding:10px 11px; margin:0px 0px 20px; color:#4c4c4c; }
+pre.error { color:red; }
+
+@media print { pre.codeinput, pre.codeoutput { word-wrap:break-word; width:100%; } }
+
+span.keyword { color:#0000FF }
+span.comment { color:#228B22 }
+span.string { color:#A020F0 }
+span.untermstring { color:#B20000 }
+span.syscmd { color:#B28C00 }
+span.typesection { color:#A0522D }
+
+.footer { width:auto; padding:10px 0px; margin:25px 0px 0px; border-top:1px dotted #878787; font-size:0.8em; line-height:140%; font-style:italic; color:#878787; text-align:left; float:none; }
+.footer p { margin:0px; }
+.footer a { color:#878787; }
+.footer a:hover { color:#878787; text-decoration:underline; }
+.footer a:visited { color:#878787; }
+
+table th { padding:7px 5px; text-align:left; vertical-align:middle; border: 1px solid #d6d4d4; font-weight:bold; }
+table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px solid #d6d4d4; }
+
+
+
+
+
+  </style>
+</head>
+<body>
+<div class="content">
+<h2>Contents</h2>
+<div>
+<ul>
+<li>
+<a href="#1">========================================================================</a>
+</li>
+<li>
+<a href="#2">Data specifications</a>
+</li>
+<li>
+<a href="#3">Configurations settings and load data</a>
+</li>
+<li>
+<a href="#4">Run proxy-SVARs</a>
+</li>
+<li>
+<a href="#5">Plots and estimates</a>
+</li>
+<li>
+<a href="#6">Save results</a>
+</li>
+</ul>
+</div>
+<h2 id="1">========================================================================</h2>
+<pre>Main replication script
+Paper: "Invalid Proxies and Volatility Changes"
+Authors: G. Angelini, L. Fanelli, L. Neri
+========================================================================</pre>
+<pre class="codeinput">clearvars; close <span class="string">all</span>; clc;
+tic;
+
+
+
+
+
+<span class="comment">% --- locate directories ---</span>
+thisFile    = mfilename(<span class="string">'fullpath'</span>);
+matlabDir   = fileparts(thisFile);
+scriptsDir  = fullfile(matlabDir,<span class="string">'scripts'</span>);
+funcDir     = fullfile(matlabDir,<span class="string">'functions'</span>);
+dataDir     = fullfile(matlabDir,<span class="string">'data'</span>);
+resultsDir  = fullfile(matlabDir,<span class="string">'results'</span>);
+logDir      = fullfile(resultsDir,<span class="string">'logs'</span>);
+
+addpath(scriptsDir, funcDir);
+
+<span class="keyword">if</span> ~exist(logDir,<span class="string">'dir'</span>); mkdir(logDir); <span class="keyword">end</span>
+
+<span class="comment">% --- start diary ---</span>
+logFileName = [<span class="string">'console_log_'</span> datestr(now,<span class="string">'yyyymmdd_HHMMSS'</span>) <span class="string">'.txt'</span>];
+logFile = fullfile(logDir,logFileName );
+<span class="keyword">if</span> exist(logFile,<span class="string">'file'</span>), delete(logFile); <span class="keyword">end</span>
+diary(logFile);
+diary <span class="string">on</span>;
+
+
+
+fprintf(<span class="string">'\n==============================================================\n'</span>);
+fprintf(<span class="string">"'Invalid proxies and volatility changes'\n"</span>)
+fprintf(<span class="string">' Starting replication at %s\n'</span>, datestr(now));
+fprintf(<span class="string">' Log file: %s\n'</span>, logFileName);
+fprintf(<span class="string">'==============================================================\n\n'</span>);
+
+
+matlab_version_check;
+</pre>
+<h2 id="2">Data specifications</h2>
+<pre class="codeinput">dataSpec = struct();
+dataSpec.dataloc= <span class="string">'Fiscal/Caldara Kamps'</span>;
+dataSpec.columnnames      = {<span class="string">'TAX_S'</span>,<span class="string">'G_S'</span>,<span class="string">'GDP_S'</span>};   <span class="comment">% endogenous Y vars</span>
+dataSpec.instrumentnames  = {<span class="string">'TAXNARRATIVE'</span>,<span class="string">'AG'</span>};     <span class="comment">% external instruments</span>
+dataSpec.time             = <span class="string">'Quarter'</span>;
+dataSpec.demean_instrument= true;                       <span class="comment">% MR-style demeaning</span>
+dataSpec.detrend_linear   = false;                      <span class="comment">% linear detrend Y</span>
+dataSpec.n                = numel(dataSpec.columnnames);
+dataSpec.k                = numel(dataSpec.instrumentnames);
+dataSpec.M                = dataSpec.n + dataSpec.k;
+
+rootDir = pwd;
+</pre>
+<h2 id="3">Configurations settings and load data</h2>
+<pre class="codeinput">cfg = default_config_fiscal();
+
+<span class="comment">% Echo settings</span>
+fprintf(<span class="string">'--- Settings --------------------------------------------------\n'</span>);
+fprintf(<span class="string">'- VAR lags: %d\n'</span>, cfg.modelSpec.p);
+fprintf(<span class="string">'- Confidence level: %.2f\n'</span>, cfg.modelSpec.confidence);
+fprintf(<span class="string">'- Variables (Y): %s\n'</span>, strjoin(dataSpec.columnnames, <span class="string">', '</span>));
+fprintf(<span class="string">'- Instruments (Z): %s\n'</span>, strjoin(dataSpec.instrumentnames, <span class="string">', '</span>));
+fprintf(<span class="string">'- Time unit: %s\n'</span>, dataSpec.time);
+fprintf(<span class="string">'- IRF horizons: %d\n'</span>, cfg.modelSpec.horizons);
+
+
+[dataSpec, cfg, DATASET] = loadAndPrepData(rootDir, dataSpec, cfg); <span class="comment">% load data</span>
+</pre>
+<h2 id="4">Run proxy-SVARs</h2>
+<pre class="codeinput">[full] = run_fullsample_proxysvar(dataSpec, cfg, rootDir);      <span class="comment">% full-sample proxy-SVAR</span>
+[reg, stats_reg]  = run_regimes_proxysvar(dataSpec, DATASET, <span class="keyword">...</span>
+                                          full, cfg);           <span class="comment">% proxy-SVAR with stability restrictions</span>
+</pre>
+<h2 id="5">Plots and estimates</h2>
+<pre class="codeinput">plot_multipliers(full, reg, dataSpec, stats_reg, cfg);                       <span class="comment">% plots</span>
+print_console_summary(full, reg, stats_reg,dataSpec,cfg);                      <span class="comment">% print estimates to screen</span>
+</pre>
+<h2 id="6">Save results</h2>
+<pre class="codeinput">save_results(full, reg, stats_reg, dataSpec, cfg);
+
+
+<span class="comment">% End of script</span>
+fprintf(<span class="string">'\n==============================================================\n'</span>);
+fprintf(<span class="string">' Replication finished at %s\n'</span>, datestr(now));
+fprintf(<span class="string">'==============================================================\n'</span>);
+
+diary <span class="string">off</span>;
+toc;
+</pre>
+<p class="footer">
+<br>
+<a href="https://www.mathworks.com/products/matlab/">Published with MATLAB&reg; R2025b</a>
+<br>
+</p>
+</div>
+<!--
+##### SOURCE BEGIN #####
+%% ========================================================================
+%  Main replication script
+%  Paper: "Invalid Proxies and Volatility Changes"
+%  Authors: G. Angelini, L. Fanelli, L. Neri
+% ========================================================================
+
+clearvars; close all; clc;
+tic;
+
+
+
+
+
+% REPLACE_WITH_DASH_DASH- locate directories REPLACE_WITH_DASH_DASH-
+thisFile    = mfilename('fullpath');
+matlabDir   = fileparts(thisFile);
+scriptsDir  = fullfile(matlabDir,'scripts');
+funcDir     = fullfile(matlabDir,'functions');
+dataDir     = fullfile(matlabDir,'data');
+resultsDir  = fullfile(matlabDir,'results');
+logDir      = fullfile(resultsDir,'logs');
+
+addpath(scriptsDir, funcDir);
+
+if ~exist(logDir,'dir'); mkdir(logDir); end
+
+% REPLACE_WITH_DASH_DASH- start diary REPLACE_WITH_DASH_DASH-
+logFileName = ['console_log_' datestr(now,'yyyymmdd_HHMMSS') '.txt'];
+logFile = fullfile(logDir,logFileName );
+if exist(logFile,'file'), delete(logFile); end
+diary(logFile);
+diary on;
+
+
+
+fprintf('\n==============================================================\n');
+fprintf("'Invalid proxies and volatility changes'\n")
+fprintf(' Starting replication at %s\n', datestr(now));
+fprintf(' Log file: %s\n', logFileName);
+fprintf('==============================================================\n\n');
+
+
+matlab_version_check;
+
+%% Data specifications
+dataSpec = struct();
+dataSpec.dataloc= 'Fiscal/Caldara Kamps';
+dataSpec.columnnames      = {'TAX_S','G_S','GDP_S'};   % endogenous Y vars
+dataSpec.instrumentnames  = {'TAXNARRATIVE','AG'};     % external instruments
+dataSpec.time             = 'Quarter';
+dataSpec.demean_instrument= true;                       % MR-style demeaning
+dataSpec.detrend_linear   = false;                      % linear detrend Y
+dataSpec.n                = numel(dataSpec.columnnames);
+dataSpec.k                = numel(dataSpec.instrumentnames);
+dataSpec.M                = dataSpec.n + dataSpec.k;
+
+rootDir = pwd;
+
+%% Configurations settings and load data 
+cfg = default_config_fiscal();    
+
+% Echo settings
+fprintf('REPLACE_WITH_DASH_DASH- Settings REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH\n');
+fprintf('- VAR lags: %d\n', cfg.modelSpec.p);
+fprintf('- Confidence level: %.2f\n', cfg.modelSpec.confidence);
+fprintf('- Variables (Y): %s\n', strjoin(dataSpec.columnnames, ', '));
+fprintf('- Instruments (Z): %s\n', strjoin(dataSpec.instrumentnames, ', '));
+fprintf('- Time unit: %s\n', dataSpec.time);
+fprintf('- IRF horizons: %d\n', cfg.modelSpec.horizons);
+
+
+[dataSpec, cfg, DATASET] = loadAndPrepData(rootDir, dataSpec, cfg); % load data
+
+%% Run proxy-SVARs
+[full] = run_fullsample_proxysvar(dataSpec, cfg, rootDir);      % full-sample proxy-SVAR
+[reg, stats_reg]  = run_regimes_proxysvar(dataSpec, DATASET, ... 
+                                          full, cfg);           % proxy-SVAR with stability restrictions 
+
+%% Plots and estimates
+plot_multipliers(full, reg, dataSpec, stats_reg, cfg);                       % plots
+print_console_summary(full, reg, stats_reg,dataSpec,cfg);                      % print estimates to screen
+
+%% Save results
+save_results(full, reg, stats_reg, dataSpec, cfg);
+
+
+% End of script
+fprintf('\n==============================================================\n');
+fprintf(' Replication finished at %s\n', datestr(now));
+fprintf('==============================================================\n');
+
+diary off;
+toc;
+##### SOURCE END #####
+-->
+</body>
+</html>
