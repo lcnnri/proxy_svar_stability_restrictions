@@ -80,7 +80,7 @@ if ~use_parallel
     end
 elseif use_parallel % parallel bootstrap
     if verbose
-        PB = ProgressBar(n_bootstrap, taskname='VAR MBB', ui='cli', no_log=false);
+        PB = ProgressBar(n_bootstrap, taskname='VAR MBB', ui='cli', no_log=true);
     end
     parfor (b=1:n_bootstrap, num_workers) 
         [b_Const, b_A, b_Sigma_eta, b_Comp_Mat, b_error, b_y] = ...

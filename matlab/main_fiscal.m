@@ -3,6 +3,70 @@
 %  Paper: "Invalid Proxies and Volatility Changes"
 %  Authors: G. Angelini, L. Fanelli, L. Neri
 % ========================================================================
+% This script replicates the empirical illustration of
+% "Invalid Proxies and Volatility Changes" (2025),
+% by G. Angelini, L. Fanelli, and L. Neri.
+%
+% Data specification:
+%   - Collects all information about the data, including file locations
+%     and the variables used in the analysis.
+%
+% Configuration settings and data loading:
+%   - Collects configuration settings for estimation and inference, such as:
+%       * VAR lag order
+%       * Number of bootstrap replications
+%       * IRF horizon
+%       * Multistart options for the objective function
+%       * Parallel options
+%   - Loads and prepares the data.
+%
+% Run proxy-SVARs:
+%   a) [full] = run_fullsample_proxysvar(dataSpec, cfg, rootDir);
+%      Estimates IRFs from a proxy-SVAR with k instruments and k shocks
+%      (code can be generalized to k_1 instruments and k_2 < k_1 shocks).
+%      Identification and estimation follow Angelini and Fanelli (2019, JAE).
+%      Performs inference and computes MBB confidence intervals for
+%      parameters and IRFs.
+%
+%   b) [reg, stats_reg] = run_regimes_proxysvar(dataSpec, DATASET, full, cfg);
+%      Estimates time-varying IRFs from a proxy-SVAR identified using
+%      stability restrictions as in Angelini, Fanelli, and Neri (2025, JBES).
+%      Minimizes the CMD objective (eq. (23) in the paper) computed by:
+%          hetcmd(theta, Shat, rG(:), rD(:), bigV_MBB)
+%      where theta is the parameter vector, Shat the reduced-form
+%      covariance matrices across regimes, rG the restrictions on the
+%      reference-regime impact matrix, rD the stability restrictions for
+%      subsequent regimes, and bigV_MBB the bootstrap covariance of the
+%      reduced-form VAR error covariance matrix. hetcmd returns the
+%      Jacobian of the moment conditions, used to check local identification
+%      via Proposition 2.
+%
+% Plots and estimates:
+%   - Produces the fiscal multipliers in Figure 1.
+%   - Displays the summary of the estimated impact matrices as in Table S.5.
+%   - Saves a text file with Table 3 to be copied into LaTeX.
+%
+% Save results:
+%   - Saves all results to results\
+%
+% The code has been run and tested with the following system:
+% --------------------------------------------------------------------------
+% MATLAB Version: 25.2.0.3042426 (R2025b) Update 1
+% Operating System: Microsoft Windows 11 Home Version 10.0 (Build 26100)
+% Java Version: Java 1.8.0_202-b08 with Oracle Corporation Java HotSpot(TM)
+%               64-Bit Server VM mixed mode
+% --------------------------------------------------------------------------
+% MATLAB                                                 Version 25.2 (R2025b)
+%
+% Required toolboxes:
+%   - Optimization Toolbox
+%   - Statistics and Machine Learning Toolbox
+%   - Global Optimization Toolbox
+%   - Econometrics Toolbox
+%==========================================================================
+
+
+
 
 clearvars; close all; clc;
 tic;

@@ -45,7 +45,7 @@ elseif use_parallel % use parallel
 
     % If it is verbose, we print a progress bar
     if verbose
-        PB = ProgressBar(n_bootstrap, taskname='SVAR MBB', ui='cli', no_log=false);
+        PB = ProgressBar(n_bootstrap, taskname='SVAR MBB', ui='cli', no_log=true);
     end
     rng(rng_clock)
     parfor (b=1:n_bootstrap,num_workers)

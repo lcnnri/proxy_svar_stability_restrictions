@@ -9,7 +9,7 @@ if ~cfg.plot_irf, return; end
     fprintf('---------------------------------------------------------------\n');
 
     inityear = floor(min(dataSpec.years));
-    initquar = (min(dataSpec.years)-inityear)/0.25+1;
+    initquar = (min(dataSpec.years)-inityear)/0.25;
     finayear = floor(max(dataSpec.years));
     finaquar = (max(dataSpec.years)-finayear)/0.25+1;
     lab_full_sample = sprintf('Proxy-SVAR, %d:Q%d-%d:Q%d',inityear,initquar,finayear,finaquar);
