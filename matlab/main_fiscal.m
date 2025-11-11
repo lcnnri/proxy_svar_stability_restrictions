@@ -1,4 +1,4 @@
-%% ========================================================================
+% ========================================================================
 %  Main replication script
 %  Paper: "Invalid Proxies and Volatility Changes"
 %  Authors: G. Angelini, L. Fanelli, L. Neri
@@ -12,15 +12,23 @@
 %     and the variables used in the analysis.
 %
 % Configuration settings and data loading:
+%
 %   - Collects configuration settings for estimation and inference, such as:
+%
 %       * VAR lag order
+%
 %       * Number of bootstrap replications
+%
 %       * IRF horizon
+%
 %       * Multistart options for the objective function
+%
 %       * Parallel options
+%
 %   - Loads and prepares the data.
 %
 % Run proxy-SVARs:
+%
 %   a) [full] = run_fullsample_proxysvar(dataSpec, cfg, rootDir);
 %      Estimates IRFs from a proxy-SVAR with k instruments and k shocks
 %      (code can be generalized to k_1 instruments and k_2 < k_1 shocks).
@@ -42,27 +50,40 @@
 %      via Proposition 2.
 %
 % Plots and estimates:
+%
 %   - Produces the fiscal multipliers in Figure 1.
+%
 %   - Displays the summary of the estimated impact matrices as in Table S.5.
+%
 %   - Saves a text file with Table 3 to be copied into LaTeX.
 %
 % Save results:
+%
 %   - Saves all results to results\
 %
 % The code has been run and tested with the following system:
-% --------------------------------------------------------------------------
+%
+% ========================================================================
+%
 % MATLAB Version: 25.2.0.3042426 (R2025b) Update 1
 % Operating System: Microsoft Windows 11 Home Version 10.0 (Build 26100)
 % Java Version: Java 1.8.0_202-b08 with Oracle Corporation Java HotSpot(TM)
 %               64-Bit Server VM mixed mode
-% --------------------------------------------------------------------------
-% MATLAB                                                 Version 25.2 (R2025b)
+%
+% ========================================================================
+%
+% MATLAB                                             Version 25.2 (R2025b)
 %
 % Required toolboxes:
+%
 %   - Optimization Toolbox
+%
 %   - Statistics and Machine Learning Toolbox
+%
 %   - Global Optimization Toolbox
+%
 %   - Econometrics Toolbox
+%
 %==========================================================================
 
 

@@ -17,7 +17,7 @@ main_fiscal;
 opts = struct;
 opts.format        = 'html';
 opts.outputDir     = fullfile(rootDir,'..','docs');
-opts.showCode      = true;     % set false if you prefer code hidden
+opts.showCode      = true;    % set false if you prefer code hidden
 opts.evalCode      = true;    % evaluation happens inside report
 opts.useNewFigure  = true;
 

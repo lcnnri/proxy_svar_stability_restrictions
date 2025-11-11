@@ -80,9 +80,6 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 <div>
 <ul>
 <li>
-<a href="#1">========================================================================</a>
-</li>
-<li>
 <a href="#2">Data specifications</a>
 </li>
 <li>
@@ -99,35 +96,93 @@ table td { padding:7px 5px; text-align:left; vertical-align:top; border:1px soli
 </li>
 </ul>
 </div>
-<h2 id="1">========================================================================</h2>
-<pre>Main replication script
-Paper: "Invalid Proxies and Volatility Changes"
-Authors: G. Angelini, L. Fanelli, L. Neri
-========================================================================
-This script replicates the empirical illustration of
-"Invalid Proxies and Volatility Changes" (2025),
-by G. Angelini, L. Fanelli, and L. Neri.</pre>
-<p>Data specification: - Collects all information about the data, including file locations and the variables used in the analysis.</p>
-<p>Configuration settings and data loading: - Collects configuration settings for estimation and inference, such as: * VAR lag order * Number of bootstrap replications * IRF horizon * Multistart options for the objective function * Parallel options - Loads and prepares the data.</p>
-<p>Run proxy-SVARs: a) [full] = run_fullsample_proxysvar(dataSpec, cfg, rootDir); Estimates IRFs from a proxy-SVAR with k instruments and k shocks (code can be generalized to k_1 instruments and k_2 &lt; k_1 shocks). Identification and estimation follow Angelini and Fanelli (2019, JAE). Performs inference and computes MBB confidence intervals for parameters and IRFs.</p>
-<pre class="language-matlab">b) [reg, stats_reg] = run_regimes_proxysvar(dataSpec, DATASET, full, cfg);
-   Estimates <span class="string">time-varying</span> <span class="string">IRFs</span> <span class="string">from</span> <span class="string">a</span> <span class="string">proxy-SVAR</span> <span class="string">identified</span> <span class="string">using</span>
-   stability <span class="string">restrictions</span> <span class="string">as</span> <span class="string">in</span> <span class="string">Angelini</span>, Fanelli, and <span class="string">Neri</span> <span class="string">(2025, JBES).</span>
-   Minimizes <span class="string">the</span> <span class="string">CMD</span> <span class="string">objective</span> <span class="string">(eq. (23) in the paper)</span> <span class="string">computed</span> <span class="string">by:</span>
-       hetcmd(theta, Shat, rG(:), rD(:), bigV_MBB)
-   where <span class="string">theta</span> <span class="string">is</span> <span class="string">the</span> <span class="string">parameter</span> <span class="string">vector</span>, Shat <span class="string">the</span> <span class="string">reduced-form</span>
-   covariance <span class="string">matrices</span> <span class="string">across</span> <span class="string">regimes</span>, rG <span class="string">the</span> <span class="string">restrictions</span> <span class="string">on</span> <span class="string">the</span>
-   reference-regime impact <span class="string">matrix</span>, rD <span class="string">the</span> <span class="string">stability</span> <span class="string">restrictions</span> <span class="string">for</span>
-   subsequent <span class="string">regimes</span>, and <span class="string">bigV_MBB</span> <span class="string">the</span> <span class="string">bootstrap</span> <span class="string">covariance</span> <span class="string">of</span> <span class="string">the</span>
-   reduced-form VAR <span class="string">error</span> <span class="string">covariance</span> <span class="string">matrix.</span> <span class="string">hetcmd</span> <span class="string">returns</span> <span class="string">the</span>
-   Jacobian <span class="string">of</span> <span class="string">the</span> <span class="string">moment</span> <span class="string">conditions</span>, used <span class="string">to</span> <span class="string">check</span> <span class="string">local</span> <span class="string">identification</span>
-   via <span class="string">Proposition</span> <span class="string">2.</span>
-</pre>
-<p>Plots and estimates: - Produces the fiscal multipliers in Figure 1. - Displays the summary of the estimated impact matrices as in Table S.5. - Saves a text file with Table 3 to be copied into LaTeX.</p>
-<p>Save results: - Saves all results to results\</p>
-<p>The code has been run and tested with the following system: -------------------------------------------------------------------------- MATLAB Version: 25.2.0.3042426 (R2025b) Update 1 Operating System: Microsoft Windows 11 Home Version 10.0 (Build 26100) Java Version: Java 1.8.0_202-b08 with Oracle Corporation Java HotSpot&trade; 64-Bit Server VM mixed mode -------------------------------------------------------------------------- MATLAB Version 25.2 (R2025b)</p>
-<p>Required toolboxes: - Optimization Toolbox - Statistics and Machine Learning Toolbox - Global Optimization Toolbox - Econometrics Toolbox</p>
 <pre class="codeinput">
+<span class="comment">% ========================================================================</span>
+<span class="comment">%  Main replication script</span>
+<span class="comment">%  Paper: "Invalid Proxies and Volatility Changes"</span>
+<span class="comment">%  Authors: G. Angelini, L. Fanelli, L. Neri</span>
+<span class="comment">% ========================================================================</span>
+<span class="comment">% This script replicates the empirical illustration of</span>
+<span class="comment">% "Invalid Proxies and Volatility Changes" (2025),</span>
+<span class="comment">% by G. Angelini, L. Fanelli, and L. Neri.</span>
+<span class="comment">%</span>
+<span class="comment">% Data specification:</span>
+<span class="comment">%   - Collects all information about the data, including file locations</span>
+<span class="comment">%     and the variables used in the analysis.</span>
+<span class="comment">%</span>
+<span class="comment">% Configuration settings and data loading:</span>
+<span class="comment">%</span>
+<span class="comment">%   - Collects configuration settings for estimation and inference, such as:</span>
+<span class="comment">%</span>
+<span class="comment">%       * VAR lag order</span>
+<span class="comment">%</span>
+<span class="comment">%       * Number of bootstrap replications</span>
+<span class="comment">%</span>
+<span class="comment">%       * IRF horizon</span>
+<span class="comment">%</span>
+<span class="comment">%       * Multistart options for the objective function</span>
+<span class="comment">%</span>
+<span class="comment">%       * Parallel options</span>
+<span class="comment">%</span>
+<span class="comment">%   - Loads and prepares the data.</span>
+<span class="comment">%</span>
+<span class="comment">% Run proxy-SVARs:</span>
+<span class="comment">%</span>
+<span class="comment">%   a) [full] = run_fullsample_proxysvar(dataSpec, cfg, rootDir);</span>
+<span class="comment">%      Estimates IRFs from a proxy-SVAR with k instruments and k shocks</span>
+<span class="comment">%      (code can be generalized to k_1 instruments and k_2 &lt; k_1 shocks).</span>
+<span class="comment">%      Identification and estimation follow Angelini and Fanelli (2019, JAE).</span>
+<span class="comment">%      Performs inference and computes MBB confidence intervals for</span>
+<span class="comment">%      parameters and IRFs.</span>
+<span class="comment">%</span>
+<span class="comment">%   b) [reg, stats_reg] = run_regimes_proxysvar(dataSpec, DATASET, full, cfg);</span>
+<span class="comment">%      Estimates time-varying IRFs from a proxy-SVAR identified using</span>
+<span class="comment">%      stability restrictions as in Angelini, Fanelli, and Neri (2025, JBES).</span>
+<span class="comment">%      Minimizes the CMD objective (eq. (23) in the paper) computed by:</span>
+<span class="comment">%          hetcmd(theta, Shat, rG(:), rD(:), bigV_MBB)</span>
+<span class="comment">%      where theta is the parameter vector, Shat the reduced-form</span>
+<span class="comment">%      covariance matrices across regimes, rG the restrictions on the</span>
+<span class="comment">%      reference-regime impact matrix, rD the stability restrictions for</span>
+<span class="comment">%      subsequent regimes, and bigV_MBB the bootstrap covariance of the</span>
+<span class="comment">%      reduced-form VAR error covariance matrix. hetcmd returns the</span>
+<span class="comment">%      Jacobian of the moment conditions, used to check local identification</span>
+<span class="comment">%      via Proposition 2.</span>
+<span class="comment">%</span>
+<span class="comment">% Plots and estimates:</span>
+<span class="comment">%</span>
+<span class="comment">%   - Produces the fiscal multipliers in Figure 1.</span>
+<span class="comment">%</span>
+<span class="comment">%   - Displays the summary of the estimated impact matrices as in Table S.5.</span>
+<span class="comment">%</span>
+<span class="comment">%   - Saves a text file with Table 3 to be copied into LaTeX.</span>
+<span class="comment">%</span>
+<span class="comment">% Save results:</span>
+<span class="comment">%</span>
+<span class="comment">%   - Saves all results to results\</span>
+<span class="comment">%</span>
+<span class="comment">% The code has been run and tested with the following system:</span>
+<span class="comment">%</span>
+<span class="comment">% ========================================================================</span>
+<span class="comment">%</span>
+<span class="comment">% MATLAB Version: 25.2.0.3042426 (R2025b) Update 1</span>
+<span class="comment">% Operating System: Microsoft Windows 11 Home Version 10.0 (Build 26100)</span>
+<span class="comment">% Java Version: Java 1.8.0_202-b08 with Oracle Corporation Java HotSpot(TM)</span>
+<span class="comment">%               64-Bit Server VM mixed mode</span>
+<span class="comment">%</span>
+<span class="comment">% ========================================================================</span>
+<span class="comment">%</span>
+<span class="comment">% MATLAB                                             Version 25.2 (R2025b)</span>
+<span class="comment">%</span>
+<span class="comment">% Required toolboxes:</span>
+<span class="comment">%</span>
+<span class="comment">%   - Optimization Toolbox</span>
+<span class="comment">%</span>
+<span class="comment">%   - Statistics and Machine Learning Toolbox</span>
+<span class="comment">%</span>
+<span class="comment">%   - Global Optimization Toolbox</span>
+<span class="comment">%</span>
+<span class="comment">%   - Econometrics Toolbox</span>
+<span class="comment">%</span>
 <span class="comment">%==========================================================================</span>
 
 
@@ -174,8 +229,8 @@ matlab_version_check;
 <pre class="codeoutput">
 ==============================================================
 'Invalid proxies and volatility changes'
- Starting replication at 11-Nov-2025 12:37:02
- Log file: console_log_20251111_123702.txt
+ Starting replication at 11-Nov-2025 13:33:45
+ Log file: console_log_20251111_133345.txt
 ==============================================================
 
 </pre>
@@ -235,7 +290,6 @@ First-stage F (homoskedastic): 3.55 | F (heteroskedasticy-robust): 1.71
 ---------------------------------------------------------------
  2)Bootstrap the reduced-form VAR (MBB)... 
 Bootstrapping reduced-form VAR (MBB)...
-VAR MBB |██████████████████████████ 43 sec ███████████████████████████|100%
 Bootstrapping reduced-form VAR finished!
 
 ---------------------------------------------------------------
@@ -250,7 +304,6 @@ the value of the step size tolerance.
 ---------------------------------------------------------------
  4) Bootstrap the structural parameters of the Proxy-SVAR... 
 Bootstrapping structural parameters and IRFs (Full Sample)...
-SVAR MBB |██████████████████████ 4 min, 28 sec ███████████████████████|100%
 Bootstrapping of structural parameters is finished.
 Run bootstrap diagnostic test of identification
  Refs: Angelini, Cavaliere, and Fanelli (2025, JoE), and Cavaliere, Fanelli, and Georgiev (2025) 
@@ -289,12 +342,10 @@ Estimated break date: 1983Q2 (tau 0.586)
        Estimate the VAR for regime 1...
        Bootstrap the VAR for regime 1...
 Bootstrapping reduced-form VAR (MBB) regime 1...
-VAR MBB |██████████████████████████ 31 sec ███████████████████████████|100%
 Bootstrapping reduced-form VAR for regime 1 finished!
        Estimate the VAR for regime 2...
        Bootstrap the VAR for regime 2...
 Bootstrapping reduced-form VAR (MBB) regime 2...
-VAR MBB |██████████████████████████ 26 sec ███████████████████████████|100%
 Bootstrapping reduced-form VAR for regime 2 finished!
 
 ---------------------------------------------------------------
@@ -317,7 +368,6 @@ Rank condition satisfied.
 ---------------------------------------------------------------
  5) Bootstrap the structural parameters of the Proxy-SVAR...
 Bootstrapping structural parameters (with stability restrictions)...
-SVAR MBB |██████████████████████ 15 min, 27 sec ██████████████████████|100%
 Bootstrapping of structural parameters is finished.
 </pre>
 <h2 id="5">Plots and estimates</h2>
@@ -408,9 +458,9 @@ toc;
 </pre>
 <pre class="codeoutput">
 ==============================================================
- Replication finished at 11-Nov-2025 12:59:51
+ Replication finished at 11-Nov-2025 13:47:50
 ==============================================================
-Elapsed time is 1369.075225 seconds.
+Elapsed time is 844.630725 seconds.
 </pre>
 <p class="footer">
 <br>
@@ -420,7 +470,7 @@ Elapsed time is 1369.075225 seconds.
 </div>
 <!--
 ##### SOURCE BEGIN #####
-%% ========================================================================
+% ========================================================================
 %  Main replication script
 %  Paper: "Invalid Proxies and Volatility Changes"
 %  Authors: G. Angelini, L. Fanelli, L. Neri
@@ -434,15 +484,23 @@ Elapsed time is 1369.075225 seconds.
 %     and the variables used in the analysis.
 %
 % Configuration settings and data loading:
+%
 %   - Collects configuration settings for estimation and inference, such as:
+%
 %       * VAR lag order
+%
 %       * Number of bootstrap replications
+%
 %       * IRF horizon
+%
 %       * Multistart options for the objective function
+%
 %       * Parallel options
+%
 %   - Loads and prepares the data.
 %
 % Run proxy-SVARs:
+%
 %   a) [full] = run_fullsample_proxysvar(dataSpec, cfg, rootDir);
 %      Estimates IRFs from a proxy-SVAR with k instruments and k shocks
 %      (code can be generalized to k_1 instruments and k_2 < k_1 shocks).
@@ -464,27 +522,40 @@ Elapsed time is 1369.075225 seconds.
 %      via Proposition 2.
 %
 % Plots and estimates:
+%
 %   - Produces the fiscal multipliers in Figure 1.
+%
 %   - Displays the summary of the estimated impact matrices as in Table S.5.
+%
 %   - Saves a text file with Table 3 to be copied into LaTeX.
 %
 % Save results:
+%
 %   - Saves all results to results\
 %
 % The code has been run and tested with the following system:
-% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
+%
+% ========================================================================
+%
 % MATLAB Version: 25.2.0.3042426 (R2025b) Update 1
 % Operating System: Microsoft Windows 11 Home Version 10.0 (Build 26100)
 % Java Version: Java 1.8.0_202-b08 with Oracle Corporation Java HotSpot(TM)
 %               64-Bit Server VM mixed mode
-% REPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASHREPLACE_WITH_DASH_DASH
-% MATLAB                                                 Version 25.2 (R2025b)
+%
+% ========================================================================
+%
+% MATLAB                                             Version 25.2 (R2025b)
 %
 % Required toolboxes:
+%
 %   - Optimization Toolbox
+%
 %   - Statistics and Machine Learning Toolbox
+%
 %   - Global Optimization Toolbox
+%
 %   - Econometrics Toolbox
+%
 %==========================================================================
 
 
